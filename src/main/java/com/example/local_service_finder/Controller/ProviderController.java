@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/providers")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProviderController {
 
     private final ProviderRepository providerRepository;
@@ -28,6 +28,13 @@ public class ProviderController {
 
     // ADD THIS
     @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
+    public String deleteProvider(@PathVariable Long id){
+
+        providerRepository.deleteById(id);
+
+        return "Provider Deleted Successfully";
+    }
     public Provider getProviderById(@PathVariable Long id) {
         return providerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Provider not found"));

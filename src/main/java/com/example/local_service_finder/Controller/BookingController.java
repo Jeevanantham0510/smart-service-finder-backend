@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
 
     private final BookingRepository bookingRepository;
@@ -21,7 +21,12 @@ public class BookingController {
         booking.setStatus("BOOKED");
         return bookingRepository.save(booking);
     }
+    @GetMapping("/user/{userId}")
+    public List<Booking> getUserBookings(@PathVariable Long userId){
 
+        return bookingRepository.findByUserId(userId);
+
+    }
     // GET ALL BOOKINGS (ADD THIS METHOD)
     @GetMapping("/all")
     public List<Booking> getAllBookings() {

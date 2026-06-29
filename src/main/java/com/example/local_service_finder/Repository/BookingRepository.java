@@ -1,6 +1,12 @@
 package com.example.local_service_finder.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.local_service_finder.Entity.Booking;
 
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+import com.example.local_service_finder.Entity.Booking;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface BookingRepository extends JpaRepository<Booking,Long>{
+
+    List<Booking> findByUserId(Long userId);
+
 }

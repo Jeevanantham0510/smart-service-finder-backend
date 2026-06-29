@@ -1,38 +1,47 @@
 package com.example.local_service_finder.Controller;
 
-import jakarta.persistence.Table;
-import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-import com.example.local_service_finder.Repository.UserRepository;
+import com.example.local_service_finder.Dto.AuthRequest;
+import com.example.local_service_finder.Dto.AuthResponse;
 import com.example.local_service_finder.Entity.User;
-import com.example.local_service_finder.Dto.*;
+import com.example.local_service_finder.Repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@Table(name="user")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:3000",
+        "http://172.16.20.123:3000"
+})
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final UserRepository repo;
 
+    // REGISTER
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
-        user.setRole("USER");
-        userRepository.save(user);
-        return "User Registered Successfully";
+    public User register(@RequestBody User user) {
+
+        user.setRole("USER"); // Every registered user is USER
+
+        return repo.save(user);
     }
 
+    // LOGIN
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = repo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid Email"));
 
         if (!user.getPassword().equals(request.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new RuntimeException("Invalid Password");
         }
 
-        return new AuthResponse("Login Successful", user.getRole());
+        return new AuthResponse(
+                "Login Successful",
+                user.getId(),
+                user.getRole()
+        );
     }
 }
